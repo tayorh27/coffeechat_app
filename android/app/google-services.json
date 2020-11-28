@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "904422092614",
+    "firebase_url": "https://my-coffeeapp.firebaseio.com",
+    "project_id": "my-coffeeapp",
+    "storage_bucket": "my-coffeeapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904422092614:android:23b813b79703822ed63f47",
+        "android_client_info": {
+          "package_name": "com.cc.coffeechat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904422092614-3s8njgh5c4hqg6r271m8rfm4g5rmiqal.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKE4cc1sdjJCrDfKV_wFlmUWLSViGspq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904422092614-3s8njgh5c4hqg6r271m8rfm4g5rmiqal.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
