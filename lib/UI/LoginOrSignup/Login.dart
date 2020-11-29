@@ -340,11 +340,12 @@ class _loginScreenState extends State<loginScreen>
       }
       FirebaseFirestore.instance
           .collection('users')
-          .doc(email.toLowerCase())
+          .doc(uid)
           .update(updateUserData)
           .then((v) {
         pd.dismissDialog();
         Map<String, dynamic> userData = new Map();
+        userData['uid'] = uid;
         userData['email'] = email;
         userData['fn'] = user['firstname'];
         userData['ln'] = user['lastname'];

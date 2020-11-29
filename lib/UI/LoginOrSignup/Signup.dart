@@ -348,9 +348,11 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
           .set(newUserData)
           .then((v) {
         Map<String, dynamic> userData = new Map();
+        userData['uid'] = firebaseUser.uid;
         userData['email'] = email;
         userData['fn'] = fullname.split(' ')[0];
         userData['ln'] = fullname.split(' ')[1];
+        userData['pic'] = "$_selectedAvatar.png";
         ss.setPrefItem('loggedin', 'true');
         ss.setPrefItem('user', jsonEncode(userData));
         pd.dismissDialog();
