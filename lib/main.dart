@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:coffeechat_app/UI/HomeUIComponent/DynamicLinkPage.dart';
 import 'package:coffeechat_app/values/values.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -116,6 +118,35 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  void initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData dynamicLink) async {
+          final Uri deepLink = dynamicLink?.link;
+
+          if (deepLink != null) {
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => new DynamicLinkPage(deepLink)));
+          }
+        },
+        onError: (OnLinkErrorException e) async {
+          print('onLinkError');
+          print(e.message);
+        }
+    );
+
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri deepLink = data?.link;
+
+    if (deepLink != null) {
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) => new DynamicLinkPage(deepLink)));
+    }
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -130,6 +161,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    this.initDynamicLinks();
     startTime();
   }
 

@@ -418,7 +418,7 @@ class _MyHome extends State<Home> {
     CoffeeJoin cj = CoffeeJoin(id, coffee.id, json['uid'], json['fn'], json['email'], json['pic'], userQ['msgId'], FieldValue.serverTimestamp());
 
     FirebaseFirestore.instance.collection('coffee-joins').doc(id).set(cj.toJSON()).then((value) async {
-      await FirebaseFirestore.instance.collection('coffee').doc(coffee.id).update({'total_comments': FieldValue.increment(1)});
+      await FirebaseFirestore.instance.collection('coffee').doc(coffee.id).update({'total_users': FieldValue.increment(1)});
       await FirebaseMessaging().subscribeToTopic(coffee.id);
       setState(() {
         _inAsyncCall = false;

@@ -18,6 +18,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
 class Signup extends StatefulWidget {
+
+  // final Uri link;
+  // Signup(this.link);
+
   @override
   _SignupState createState() => _SignupState();
 }

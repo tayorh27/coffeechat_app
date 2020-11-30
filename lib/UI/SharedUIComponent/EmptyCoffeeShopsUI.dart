@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class EmptyCoffeeShop extends StatelessWidget {
   final String text;
+  // final bool showButton;
 
   EmptyCoffeeShop(this.text);
 
