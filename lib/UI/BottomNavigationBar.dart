@@ -1,3 +1,5 @@
+import 'package:coffeechat_app/UI/MyCoffeeJoinsUIComponent/MyCoffeeJoins.dart';
+import 'package:coffeechat_app/UI/MyCoffeeUIComponent/MyCoffeeShops.dart';
 import 'package:flutter/material.dart';
 // import 'package:treva_shop_flutter/UI/BrandUIComponent/BrandLayout.dart';
 // import 'package:treva_shop_flutter/UI/CartUIComponent/CartLayout.dart';
@@ -18,9 +20,9 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
    case 0:
     return new Home();
    case 1:
-    return new Home();
+    return new MyCoffeeShops();
    case 2:
-    return new Home();
+    return new MyCoffeeJoins();
    case 3:
     return new Home();
     break;
@@ -60,15 +62,15 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
          BottomNavigationBarItem(
-             icon: Icon(Icons.group),//Icons.shop
+             icon: Icon(Icons.meeting_room),//Icons.shop
              title: Text(
-              "Social Tree",
+              "My Coffee",
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
          BottomNavigationBarItem(
-             icon: Icon(Icons.shopping_cart),
+             icon: Icon(Icons.security),
              title: Text(
-              "Cart",
+              "Joined Coffee",
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
          BottomNavigationBarItem(

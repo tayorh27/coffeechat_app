@@ -8,6 +8,7 @@ import 'package:coffeechat_app/Utils/general.dart';
 import 'package:coffeechat_app/Utils/storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -469,7 +470,7 @@ class _CreateCoffee extends State<CreateCoffee> {
       Coffee _coffee = new Coffee(
           id,
           json['uid'],
-          json['fn'],
+          '${json['fn']} ${json['ln']}',
           json['pic'],
           t1.text,
           t2.text,
@@ -489,7 +490,8 @@ class _CreateCoffee extends State<CreateCoffee> {
           .collection('coffee')
           .doc(id)
           .set(_coffee.toJSON())
-          .then((d) {
+          .then((d) async {
+            await FirebaseMessaging().subscribeToTopic(id);
         setState(() {
           t1.clear();
           t2.clear();

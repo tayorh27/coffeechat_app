@@ -22,6 +22,17 @@ class CoffeeJoin {
       'timestamp':timestamp,
     };
   }
+
+  CoffeeJoin.fromSnapshot(dynamic data) {
+    id = data['id'];
+    coffee_id = data['coffee_id'];
+    user_id = data['user_id'];
+    name = data['name'];
+    email = data['email'];
+    picture = data['picture'];
+    msgId = data['msgId'];
+    timestamp = data['timestamp'];
+  }
 }
 
 
