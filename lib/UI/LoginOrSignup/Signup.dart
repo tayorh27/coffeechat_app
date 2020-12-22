@@ -217,7 +217,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                                         icon: Icons.email,
                                         password: false,
                                         isFullname: false,
-                                        placeholder: "Email",
+                                        placeholder: "Harvard Email",
                                         inputType: TextInputType.emailAddress,
                                       ),
 
@@ -294,7 +294,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
                               },
                               child: buttonBlackBottom(),
                             )
-                          : new LoginAnimation(
+                          : new LoginAnimation("profile",
                               animationController: sanimationController.view,
                             )
                     ],
@@ -307,8 +307,42 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       ),
     );
   }
-
-  signupWithEmailAndPassword() {
+  // {
+  // "email": "tayo@harvard.edu.com",
+  // "user": "tayo",
+  // "domain": "harvard.edu.com",
+  // "status": "invalid",
+  // "reason": "harvard.edu.com does not exist",
+  // "disposable": false
+  // }
+  // {
+  // "email": "gisanrinadetayo@gmail.com",
+  // "user": "gisanrinadetayo",
+  // "domain": "gmail.com",
+  // "status": "valid",
+  // "reason": "The email address is valid.",
+  // "disposable": false
+  // }
+  // {
+  // "email": "gisanrinadetayo1@tagdev.tech",
+  // "user": "gisanrinadetayo1",
+  // "domain": "tagdev.tech",
+  // "status": "unknown",
+  // "reason": "The SMTP server is taking too much time to respond.",
+  // "disposable": false
+  // }
+  Future<bool> verifyEmailAddress(String email) async {
+    http.Response res = await http.get('https://email-checker.p.rapidapi.com/verify/v1?email=$email', headers: {"x-rapidapi-key": "03ddf07194msh1ce166734d2c15dp1f81fcjsn86e2bf3f992f",
+      "x-rapidapi-host": "email-checker.p.rapidapi.com",
+      "useQueryString": "true"});
+    Map<String, dynamic> _json = jsonDecode(res.body);
+    if(_json["status"] != "valid") {
+      return false;
+    }
+    return true;
+  }
+  
+  signupWithEmailAndPassword() async {
     try {
       if (!validateAndSave()) {
         return;
@@ -317,12 +351,22 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         pd.displayMessage(context, 'Error', 'Enter full name');
         return;
       }
+      if (!mEmail.toLowerCase().contains('harvard.edu')) {
+        pd.displayMessage(context, 'Error', 'Invalid email address');
+        return;
+      }
       pd.displayDialog("Please wait...");
+      bool isValidEmail = await verifyEmailAddress(mEmail.toLowerCase());
+      if(!isValidEmail){
+        pd.dismissDialog();
+        pd.displayMessage(context, 'Error', 'Invalid Email Address. Try with a valid email.');
+        return;
+      }
       FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: mEmail, password: mPassword)
+          .createUserWithEmailAndPassword(email: mEmail.toLowerCase(), password: mPassword)
           .then((result) {
         result.user.sendEmailVerification();
-        checkFirestoreAndRedirect(mEmail, result.user);
+        checkFirestoreAndRedirect(mEmail.toLowerCase(), result.user);
       }).catchError((err) {
         FirebaseAuth.instance.signOut();
         pd.dismissDialog();
@@ -341,6 +385,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
       newUserData['blocked'] = false;
       newUserData['created_date'] = new DateTime.now().toString();
       newUserData['email'] = email;
+      newUserData['status'] = "online";
       newUserData['firstname'] = fullname.split(' ')[0];
       newUserData['lastname'] = fullname.split(' ')[1];
       newUserData['picture'] = "$_selectedAvatar.png";
@@ -363,7 +408,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
         setState(() {
           tap = 1;
         });
-        new LoginAnimation(
+        new LoginAnimation("profile",
           animationController: sanimationController.view,
         );
         _PlayAnimation();

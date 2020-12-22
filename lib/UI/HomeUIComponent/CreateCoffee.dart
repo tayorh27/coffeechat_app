@@ -30,14 +30,17 @@ class _CreateCoffee extends State<CreateCoffee> {
   List<String> coffee_access = ['public', 'private'];
   String selected_access = 'public';
 
+  List<String> coffee_interest = ['public', 'private'];
+  String selected_interest = 'public';
+
   bool _inAsyncCall = false;
   final formKey = new GlobalKey<FormState>();
 
   TextEditingController t1 = new TextEditingController(text: '');
   TextEditingController t2 = new TextEditingController(text: '');
   TextEditingController t3 = new TextEditingController(text: '');
-  // TextEditingController t4 = new TextEditingController(text: '');
-  // TextEditingController t5 = new TextEditingController(text: '');
+  TextEditingController t4 = new TextEditingController(text: '');
+  TextEditingController t5 = new TextEditingController(text: '');
   // TextEditingController t6 = new TextEditingController(text: '');
   // TextEditingController t7 = new TextEditingController(text: '');
 
@@ -201,10 +204,26 @@ class _CreateCoffee extends State<CreateCoffee> {
                     textFromField(t3,
                         icon: Icons.link,
                         password: false,
-                        placeholder: "Zoom Invitation*",
+                        placeholder: "Google Meet / Zoom Invitation*",
                         inputType: TextInputType.multiline,
                         min: 3,
                         max: 10),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+                    textFromField(t4,
+                        icon: Icons.text_rotation_none_outlined,
+                        password: false,
+                        placeholder: "Zoom Meeting ID*",
+                        inputType: TextInputType.text,
+                        min: 3,
+                        max: 10),
+                    Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+                    textFromField(t5,
+                        icon: Icons.vpn_key,
+                        password: false,
+                        placeholder: "Zoom Meeting Password*",
+                        inputType: TextInputType.text,
+                        min: 1,
+                        max: 1),
                     // Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
                     // textFromField(
                     //   t4,
@@ -215,7 +234,7 @@ class _CreateCoffee extends State<CreateCoffee> {
                     // ),
                     //gender
                     Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-                    dropDownField(),
+                    dropDownField(coffee_access, "access"),
                     // Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
                     // textFromField(
                     //   t5,
@@ -241,116 +260,117 @@ class _CreateCoffee extends State<CreateCoffee> {
                     //   inputType: TextInputType.text,
                     // ),
                     Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(left: 30.0, right: 0.0),
-                              child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.5,
-                                  height: 60.0,
-                                  alignment: AlignmentDirectional.center,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14.0),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            blurRadius: 10.0,
-                                            color: Colors.black12)
-                                      ]),
-                                  padding: EdgeInsets.only(
-                                      left: 10.0,
-                                      right: 0.0,
-                                      top: 0.0,
-                                      bottom: 0.0),
-                                  child: Theme(
-                                      data: ThemeData(
-                                        hintColor: Colors.transparent,
-                                      ),
-                                      child: new DateTimeField(
-                                        format: dateFormat,
-                                        onChanged: (date) {
-                                          _event_start_date = date.toString();
-                                        },
-                                        controller: e1,
-                                        decoration: new InputDecoration(
-                                            labelText: 'Start Date*',
-                                            alignLabelWithHint: true,
-                                            hasFloatingPlaceholder: true,
-                                            border: InputBorder.none,
-                                            labelStyle: TextStyle(
-                                                fontSize: 13.0,
-                                                fontFamily: 'Roboto',
-                                                letterSpacing: 0.3,
-                                                color: Colors.black38,
-                                                fontWeight: FontWeight.w600)),
-                                        onShowPicker: (context, currentValue) {
-                                          return showDatePicker(
-                                              context: context,
-                                              firstDate: DateTime(1900),
-                                              initialDate: currentValue ??
-                                                  DateTime.now(),
-                                              lastDate: DateTime(2500));
-                                        },
-                                      )))),
-                          Padding(
-                              padding: EdgeInsets.only(left: 10.0, right: 0.0),
-                              child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.4,
-                                  height: 60.0,
-                                  alignment: AlignmentDirectional.center,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14.0),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            blurRadius: 10.0,
-                                            color: Colors.black12)
-                                      ]),
-                                  padding: EdgeInsets.only(
-                                      left: 10.0,
-                                      right: 0.0,
-                                      top: 0.0,
-                                      bottom: 0.0),
-                                  child: Theme(
-                                      data: ThemeData(
-                                        hintColor: Colors.transparent,
-                                      ),
-                                      child: new DateTimeField(
-                                        format: dateFormat,
-                                        onChanged: (date) {
-                                          _event_end_date = date.toString();
-                                        },
-                                        controller: e2,
-                                        decoration: new InputDecoration(
-                                            labelText: 'End Date*',
-                                            alignLabelWithHint: true,
-                                            hasFloatingPlaceholder: true,
-                                            border: InputBorder.none,
-                                            labelStyle: TextStyle(
-                                                fontSize: 13.0,
-                                                fontFamily: 'Roboto',
-                                                letterSpacing: 0.3,
-                                                color: Colors.black38,
-                                                fontWeight: FontWeight.w600)),
-                                        onShowPicker: (context, currentValue) {
-                                          return showDatePicker(
-                                              context: context,
-                                              firstDate: DateTime(1900),
-                                              initialDate: currentValue ??
-                                                  DateTime.now(),
-                                              lastDate: DateTime(2500));
-                                        },
-                                      )))),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   width: MediaQuery.of(context).size.width,
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.max,
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     mainAxisAlignment: MainAxisAlignment.start,
+                    //     children: <Widget>[
+                    //       Padding(
+                    //           padding: EdgeInsets.only(left: 30.0, right: 0.0),
+                    //           child: Container(
+                    //               width:
+                    //                   MediaQuery.of(context).size.width / 2.5,
+                    //               height: 60.0,
+                    //               alignment: AlignmentDirectional.center,
+                    //               decoration: BoxDecoration(
+                    //                   borderRadius: BorderRadius.circular(14.0),
+                    //                   color: Colors.white,
+                    //                   boxShadow: [
+                    //                     BoxShadow(
+                    //                         blurRadius: 10.0,
+                    //                         color: Colors.black12)
+                    //                   ]),
+                    //               padding: EdgeInsets.only(
+                    //                   left: 10.0,
+                    //                   right: 0.0,
+                    //                   top: 0.0,
+                    //                   bottom: 0.0),
+                    //               child: Theme(
+                    //                   data: ThemeData(
+                    //                     hintColor: Colors.transparent,
+                    //                   ),
+                    //                   child: new DateTimeField(
+                    //                     format: dateFormat,
+                    //                     onChanged: (date) {
+                    //                       _event_start_date = date.toString();
+                    //                     },
+                    //                     controller: e1,
+                    //                     decoration: new InputDecoration(
+                    //                         labelText: 'Start Date*',
+                    //                         alignLabelWithHint: true,
+                    //                         hasFloatingPlaceholder: true,
+                    //                         border: InputBorder.none,
+                    //                         labelStyle: TextStyle(
+                    //                             fontSize: 13.0,
+                    //                             fontFamily: 'Roboto',
+                    //                             letterSpacing: 0.3,
+                    //                             color: Colors.black38,
+                    //                             fontWeight: FontWeight.w600)),
+                    //                     onShowPicker: (context, currentValue) {
+                    //                       return showDatePicker(
+                    //                           context: context,
+                    //                           firstDate: DateTime(1900),
+                    //                           initialDate: currentValue ??
+                    //                               DateTime.now(),
+                    //                           lastDate: DateTime(2500));
+                    //                     },
+                    //                   )))),
+                    //       Padding(
+                    //           padding: EdgeInsets.only(left: 10.0, right: 0.0),
+                    //           child: Container(
+                    //               width:
+                    //                   MediaQuery.of(context).size.width / 2.4,
+                    //               height: 60.0,
+                    //               alignment: AlignmentDirectional.center,
+                    //               decoration: BoxDecoration(
+                    //                   borderRadius: BorderRadius.circular(14.0),
+                    //                   color: Colors.white,
+                    //                   boxShadow: [
+                    //                     BoxShadow(
+                    //                         blurRadius: 10.0,
+                    //                         color: Colors.black12)
+                    //                   ]),
+                    //               padding: EdgeInsets.only(
+                    //                   left: 10.0,
+                    //                   right: 0.0,
+                    //                   top: 0.0,
+                    //                   bottom: 0.0),
+                    //               child: Theme(
+                    //                   data: ThemeData(
+                    //                     hintColor: Colors.transparent,
+                    //                   ),
+                    //                   child: new DateTimeField(
+                    //                     format: dateFormat,
+                    //                     onChanged: (date) {
+                    //                       _event_end_date = date.toString();
+                    //                     },
+                    //                     controller: e2,
+                    //                     decoration: new InputDecoration(
+                    //                         labelText: 'End Date*',
+                    //                         alignLabelWithHint: true,
+                    //                         hasFloatingPlaceholder: true,
+                    //                         border: InputBorder.none,
+                    //                         labelStyle: TextStyle(
+                    //                             fontSize: 13.0,
+                    //                             fontFamily: 'Roboto',
+                    //                             letterSpacing: 0.3,
+                    //                             color: Colors.black38,
+                    //                             fontWeight: FontWeight.w600)),
+                    //                     onShowPicker: (context, currentValue) {
+                    //                       return showDatePicker(
+                    //                           context: context,
+                    //                           firstDate: DateTime(1900),
+                    //                           initialDate: currentValue ??
+                    //                               DateTime.now(),
+                    //                           lastDate: DateTime(2500));
+                    //                     },
+                    //                   )))),
+                    //     ],
+                    //   ),
+                    // ),
+                    dropDownField(coffee_interest, "interest"),
                     Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
 
                     InkWell(
@@ -447,6 +467,14 @@ class _CreateCoffee extends State<CreateCoffee> {
             context, 'Error', 'Please fill all fields marked with *');
         return;
       }
+      if(t3.text.contains("Meeting ID") || t3.text.contains("Zoom")){
+        //check for id and pwd
+        if(t4.text.isEmpty || t5.text.isEmpty) {
+          new GeneralUtils().neverSatisfied(
+              context, 'Error', 'Please enter the zoom meeting ID and Password');
+          return;
+        }
+      }
       setState(() {
         _inAsyncCall = true;
       });
@@ -476,8 +504,10 @@ class _CreateCoffee extends State<CreateCoffee> {
           t2.text,
           t3.text,
           selected_access,
-          _event_start_date,
-          _event_end_date,
+          selected_interest,
+          t4.text.replaceAll(" ", ""),
+          t5.text,
+          // _event_end_date,
           userQ['msgId'],
           _images,
           new DateTime.now().toString(),
@@ -496,8 +526,8 @@ class _CreateCoffee extends State<CreateCoffee> {
           t1.clear();
           t2.clear();
           t3.clear();
-          // t4.clear();
-          // t5.clear();
+          t4.clear();
+          t5.clear();
           // t6.clear();
           // t7.clear();
           e1.clear();
@@ -531,7 +561,7 @@ class _CreateCoffee extends State<CreateCoffee> {
   } //not used
 
   //dropdown custom class
-  Widget dropDownField() {
+  Widget dropDownField(List<String> itemList, String type) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
@@ -548,7 +578,7 @@ class _CreateCoffee extends State<CreateCoffee> {
               hintColor: Colors.transparent,
             ),
             child: DropdownButton(
-              items: coffee_access.map((m) {
+              items: itemList.map((m) {
                 return DropdownMenuItem<String>(
                   value: m,
                   child: Row(
@@ -557,7 +587,7 @@ class _CreateCoffee extends State<CreateCoffee> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Icon(
-                        Icons.verified_user,
+                        (type == "access") ? Icons.verified_user : Icons.favorite,
                         color: Colors.black38,
                       ),
                       Padding(
@@ -573,10 +603,15 @@ class _CreateCoffee extends State<CreateCoffee> {
               }).toList(),
               onChanged: (String item) {
                 setState(() {
-                  selected_access = item;
+                  if(type == "access"){
+                    selected_access = item;
+                  }else {
+                    selected_interest = item;
+                  }
+
                 });
               },
-              value: selected_access,
+              value: (type == "access") ? selected_access: selected_interest,
               hint: Text(
                 'public',
                 textAlign: TextAlign.right,

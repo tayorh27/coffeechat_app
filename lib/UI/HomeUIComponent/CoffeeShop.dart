@@ -8,6 +8,7 @@ import 'package:coffeechat_app/ListItem/CoffeeComments.dart';
 import 'package:coffeechat_app/ListItem/CoffeeJoin.dart';
 import 'package:coffeechat_app/UI/HomeUIComponent/theme_top_scroll.dart';
 import 'package:coffeechat_app/UI/SharedUIComponent/EmptyCoffeeShopsUI.dart';
+import 'package:coffeechat_app/UI/ZoomUI/StartZoom.dart';
 import 'package:coffeechat_app/Utils/colors.dart';
 import 'package:coffeechat_app/Utils/general.dart';
 import 'package:coffeechat_app/Utils/storage.dart';
@@ -64,6 +65,7 @@ class _CoffeeShop extends State<CoffeeShop> {
         .collection('coffee-joins').where('coffee_id', isEqualTo: widget.coffee.id).orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
+      if(!mounted) return;
       coffeeJoins.clear();
       event.docs.forEach((element) {
         setState(() {
@@ -78,6 +80,7 @@ class _CoffeeShop extends State<CoffeeShop> {
         .collection('coffee-requests').where('coffee_id', isEqualTo: widget.coffee.id).orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
+      if(!mounted) return;
       coffeeAccess.clear();
       event.docs.forEach((element) {
         setState(() {
@@ -91,6 +94,7 @@ class _CoffeeShop extends State<CoffeeShop> {
     Query reference = FirebaseFirestore.instance
         .collection('coffee-comments').where('coffee_id', isEqualTo: widget.coffee.id).orderBy('timestamp', descending: false);
     reference.snapshots().listen((event) {
+      if(!mounted) return;
       coffeeComments.clear();
       event.docs.forEach((element) {
         setState(() {
@@ -286,7 +290,8 @@ class _CoffeeShop extends State<CoffeeShop> {
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20.0),
-            child: LinkText(
+            child: InkWell(child:
+            LinkText(
               text: widget.coffee.zoom_invite,
               textAlign: TextAlign.start,
               textStyle: TextStyle(
@@ -303,7 +308,15 @@ class _CoffeeShop extends State<CoffeeShop> {
                 fontSize: 15,
                 letterSpacing: -0.384,
               ),
-            )
+            ), onTap: (){
+              String user = ss.getItem('user');
+              Map<String, dynamic> json = jsonDecode(user);
+              String un = '${json["fn"]} ${json["ln"]}';
+              Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => new ZoomMeetingWidget(meetingId: widget.coffee.meeting_id,meetingPassword: widget.coffee.meeting_pwd, username: un,)));
+            },)
             // Text(
             //     widget.coffee.description,
             //     textAlign: TextAlign.start,
@@ -701,7 +714,7 @@ class _CoffeeShop extends State<CoffeeShop> {
 
     CoffeeComment cc = CoffeeComment(id, widget.coffee.id, json['uid'], '${json['fn']} ${json['ln']}', json['email'], json['pic'], t1.text, new DateTime.now().toString(), userQ['msgId'], FieldValue.serverTimestamp());
     FirebaseFirestore.instance.collection('coffee-comments').doc(id).set(cc.toJSON()).then((value) async {
-      await FirebaseFirestore.instance.collection('coffee').doc(widget.coffee.id).update({'total_users': FieldValue.increment(1)});
+      await FirebaseFirestore.instance.collection('coffee').doc(widget.coffee.id).update({'total_comments': FieldValue.increment(1)});
       await new GeneralUtils().sendNotificationToTopic(t1.text, 'CoffeeChat - New Message', widget.coffee.id);
       setState(() {
         t1.clear();

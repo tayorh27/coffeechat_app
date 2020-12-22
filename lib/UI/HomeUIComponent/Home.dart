@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffeechat_app/ListItem/Coffee.dart';
 import 'package:coffeechat_app/ListItem/CoffeeAccess.dart';
 import 'package:coffeechat_app/ListItem/CoffeeJoin.dart';
+import 'package:coffeechat_app/ListItem/CoffeeUsers.dart';
+import 'package:coffeechat_app/ListItem/SavedUsers.dart';
 import 'package:coffeechat_app/UI/HomeUIComponent/CoffeeShop.dart';
 import 'package:coffeechat_app/UI/HomeUIComponent/CreateCoffee.dart';
 import 'package:coffeechat_app/Utils/colors.dart';
@@ -112,6 +114,10 @@ class _MyHome extends State<Home> {
 
   List<Coffee> myCoffee = new List();
 
+  List<CoffeeUsers> cUsers = new List();
+
+  bool isNetWorkView = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -119,8 +125,35 @@ class _MyHome extends State<Home> {
     setState(() {
       _inAsyncCall = true;
     });
+
+    String user = ss.getItem('user');
+    Map<String, dynamic> jsonStat = jsonDecode(user);
+
+    FirebaseFirestore.instance.collection("user").doc("${jsonStat["uid"]}").update(
+        {"status":"online"});
+
+
+    //list all users
     FirebaseFirestore.instance
-        .collection('coffee').orderBy('timestamp', descending: true)
+        .collection('users').orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((event) {
+      cUsers.clear();
+      event.docs.forEach((element) {
+        setState(() {
+          cUsers.add(CoffeeUsers.fromSnapshot(element.data()));
+        });
+      });
+      setState(() {
+        _inAsyncCall = false;
+      });
+    });
+
+    String userPrefs = ss.getItem('networkPrefs');
+    Map<String, dynamic> json = jsonDecode(userPrefs);
+
+    FirebaseFirestore.instance
+        .collection('coffee').where("interest", arrayContainsAny: json["prefs"]).orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
       myCoffee.clear();
@@ -140,11 +173,14 @@ class _MyHome extends State<Home> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    String user = ss.getItem('user');
+    Map<String, dynamic> json = jsonDecode(user);
+    String email = json["email"];
     return Scaffold(
         appBar: AppBar(
           title: Text('Coffee Shops'),
           actions: [
-            FlatButton.icon(
+            (email.startsWith("pattern")) ? FlatButton.icon(
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -152,7 +188,14 @@ class _MyHome extends State<Home> {
                           pageBuilder: (_, __, ___) => new CreateCoffee()));
                 },
                 icon: Icon(Icons.add),
-                label: Text('CREATE'))
+                label: Text('CREATE')) : Text(""),
+            FlatButton(
+                onPressed: () {
+                  setState(() {
+                    isNetWorkView = !isNetWorkView;
+                  });
+                },
+                child: (isNetWorkView) ? Text('USERS') : Text('NETWORKS'))
           ],
         ),
         backgroundColor: Colors.white,
@@ -165,11 +208,16 @@ class _MyHome extends State<Home> {
                 margin: EdgeInsets.symmetric(horizontal: 10.0),
                 child: ListView(
                   scrollDirection: Axis.vertical,
-                  children: [
+                  children: (isNetWorkView) ? [
                     Container(
                       height: 20.0,
                     ),
                     ...coffeeBuilder(),
+                  ] : [
+                    Container(
+                      height: 20.0,
+                    ),
+                    ...coffeeUsersBuilder(),
                   ],
                 ))));
   }
@@ -432,5 +480,203 @@ class _MyHome extends State<Home> {
           PageRouteBuilder(
               pageBuilder: (_, __, ___) => new CoffeeShop(coffee)));
     });
+  }
+
+
+  //users builder
+  List<Widget> coffeeUsersBuilder() {
+    List<Widget> builder = new List();
+
+    cUsers.forEach((_user) {
+      builder.add(buildCoffeeUsers(_user));
+    });
+
+    return builder;
+  }
+
+  Widget buildCoffeeUsers(CoffeeUsers user) {
+    return Container(
+      height: 208,
+      margin: EdgeInsets.only(left: 21, top: 25, right: 21),
+      child: Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  child: Image.asset(
+                    "assets/images/${user.picture}",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  left: 73,
+                  top: 14,
+                  right: 19,
+                  bottom: 16,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "${user.firstname} ${user.lastname}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.primaryText,
+                            fontFamily: "Roboto",
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            letterSpacing: -0.384,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 3, top: 7),
+                          child: Text(
+                            user.status,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.secondaryText,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12,
+                              letterSpacing: -0.288,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          width: 242,
+                          height: 1,
+                          margin: EdgeInsets.only(right: 1, bottom: 14),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryElement,
+                          ),
+                          child: Container(),
+                        ),
+                      ),
+                      Container(
+                        height: 21,
+                        margin: EdgeInsets.only(left: 1),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: InkWell(
+                                child: Text(
+                                  "Chat",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Color(MyColors.primary_color),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 16,
+                                    letterSpacing: -0.384,
+                                  ),
+                                ),
+                                onTap: (){
+                                  chatUser(user);
+                                },
+                              )
+                            ),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: InkWell(
+                                child: Text(
+                                  "Save",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Color(MyColors.primary_color),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 16,
+                                    letterSpacing: -0.384,
+                                  ),
+                                ),
+                                onTap: (){
+                                  saveUser(user);
+                                },
+                              ),
+                            ),
+                            Spacer(),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                width: 8,
+                                height: 14,
+                                margin: EdgeInsets.only(bottom: 4),
+                                child: Image.asset(
+                                  "assets/images/path-1555.png",
+                                  fit: BoxFit.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 11,
+            child: Text(
+              user.bio,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: AppColors.primaryText,
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w300,
+                fontSize: 16,
+                letterSpacing: -0.384,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  saveUser(CoffeeUsers user) async {
+    setState(() {
+      _inAsyncCall = true;
+    });
+    String id = FirebaseDatabase.instance.reference().push().key;
+    QuerySnapshot query = await FirebaseFirestore.instance.collection('saved-users').where("user.id", isEqualTo: user.id).get();
+    if(query.size > 0){
+      setState(() {
+        _inAsyncCall = false;
+      });
+      new GeneralUtils().showToast('User already saved.');
+      return;
+    }
+
+    SavedUsers su = SavedUsers(id, new DateTime.now().toString(), FieldValue.serverTimestamp(), user);
+    await FirebaseFirestore.instance.collection('saved-users').doc(id).set(su.toJSON());
+    setState(() {
+      _inAsyncCall = false;
+    });
+    new GeneralUtils().showToast('User saved successfully.');
+  }
+
+  chatUser(CoffeeUsers user) {
+
   }
 }

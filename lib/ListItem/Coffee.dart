@@ -7,8 +7,9 @@ class Coffee {
       description,
       zoom_invite,
       access_type,
-      start_date,
-      end_date;
+      meeting_id,
+      meeting_pwd,
+      interest;
   dynamic msgIds;
   dynamic images;
   String created_date;
@@ -18,7 +19,7 @@ class Coffee {
 
 
   Coffee(this.id, this.user_id, this.name, this.avatar, this.title, this.description, this.zoom_invite,
-      this.access_type, this.start_date, this.end_date, this.msgIds, this.images, this.created_date, this.timestamp, this.total_users, this.total_comments, this.link);
+      this.access_type, this.interest, this.meeting_id, this.meeting_pwd, this.msgIds, this.images, this.created_date, this.timestamp, this.total_users, this.total_comments, this.link);
 
   Map<String, dynamic> toJSON() {
     return {
@@ -30,8 +31,9 @@ class Coffee {
       'description': description,
       'zoom_invite': zoom_invite,
       'access_type': access_type,
-      'start_date': start_date,
-      'end_date': end_date,
+      'start_date': interest,
+      'start_date': meeting_id,
+      'start_date': meeting_pwd,
       'msgIds': msgIds,
       'images': images,
       // 'profile_image_url': profile_image_url,
@@ -53,8 +55,9 @@ class Coffee {
     description = data['description'];
     zoom_invite = data['zoom_invite'];
     access_type = data['access_type'];
-    start_date = data['start_date'];
-    end_date = data['end_date'];
+    interest = data['interest'];
+    meeting_id = data['meeting_id'];
+    meeting_pwd = data['meeting_pwd'];
     msgIds = data['msgIds'];
     images = data['images'];
     created_date = data['created_date'];

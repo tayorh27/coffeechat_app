@@ -46,6 +46,13 @@ dependencies:
   share_it: ^0.5.1+3
   flutter_slidable: ^0.5.7
   link_text: ^0.1.3
+  flutter_zoom_plugin:
+    git:
+      url: git://github.com/decodedhealth/flutter_zoom_plugin.git
+      # Android
+      ref: 0.0.8
+      # iOS
+      #ref: master
 
 dev_dependencies:
   flutter_test:

@@ -254,7 +254,7 @@ class _loginScreenState extends State<loginScreen>
                           },
                           child: buttonBlackBottom(),
                         )
-                      : new LoginAnimation(
+                      : new LoginAnimation("home",
                           animationController: sanimationController.view,
                         ),
                 ],
@@ -355,7 +355,7 @@ class _loginScreenState extends State<loginScreen>
         setState(() {
           tap = 1;
         });
-        new LoginAnimation(
+        new LoginAnimation("home",
           animationController: sanimationController.view,
         );
         _PlayAnimation();

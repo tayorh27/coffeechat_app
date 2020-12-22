@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffeechat_app/UI/HomeUIComponent/DynamicLinkPage.dart';
 import 'package:coffeechat_app/values/values.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -154,6 +156,10 @@ class _SplashScreenState extends State<SplashScreen> {
     if(user.isEmpty) {
       ss.clearPref();
       ss.disposePref();
+    }else {
+      Map<String, dynamic> json = jsonDecode(user);
+      FirebaseFirestore.instance.collection("user").doc("${json["uid"]}").update(
+          {"status":"offline"});
     }
     super.dispose();
   }
