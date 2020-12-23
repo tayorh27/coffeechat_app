@@ -69,6 +69,7 @@ class _MyCoffeeJoins extends State<MyCoffeeJoins> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Accessed Coffee Shops'),
+          automaticallyImplyLeading: false,
           actions: [
           ],
         ),

@@ -7,6 +7,8 @@ import 'package:coffeechat_app/UI/HomeUIComponent/Home.dart';
 // import 'package:treva_shop_flutter/UI/AcountUIComponent/Profile.dart';
 import 'package:coffeechat_app/Utils/colors.dart';
 
+import 'HomeUIComponent/SavedUsersAndRequest.dart';
+
 class bottomNavigationBar extends StatefulWidget {
  @override
  _bottomNavigationBarState createState() => _bottomNavigationBarState();
@@ -20,7 +22,7 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
    case 0:
     return new Home();
    case 1:
-    return new MyCoffeeShops();
+    return new SavedUsersAndRequest();//MyCoffeeShops();
    case 2:
     return new MyCoffeeJoins();
    case 3:
@@ -64,13 +66,13 @@ class _bottomNavigationBarState extends State<bottomNavigationBar> {
          BottomNavigationBarItem(
              icon: Icon(Icons.meeting_room),//Icons.shop
              title: Text(
-              "My Coffee",
+              "Requests",
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
          BottomNavigationBarItem(
-             icon: Icon(Icons.security),
+             icon: Icon(Icons.people),
              title: Text(
-              "Joined Coffee",
+              "Networks",
               style: TextStyle(fontFamily: "Berlin", letterSpacing: 0.5),
              )),
          BottomNavigationBarItem(

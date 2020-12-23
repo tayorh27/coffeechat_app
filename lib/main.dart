@@ -158,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ss.disposePref();
     }else {
       Map<String, dynamic> json = jsonDecode(user);
-      FirebaseFirestore.instance.collection("user").doc("${json["uid"]}").update(
+      FirebaseFirestore.instance.collection("users").doc("${json["uid"]}").update(
           {"status":"offline"});
     }
     super.dispose();

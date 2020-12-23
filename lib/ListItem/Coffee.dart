@@ -8,8 +8,8 @@ class Coffee {
       zoom_invite,
       access_type,
       meeting_id,
-      meeting_pwd,
-      interest;
+      meeting_pwd;
+  dynamic interest;
   dynamic msgIds;
   dynamic images;
   String created_date;
@@ -31,9 +31,9 @@ class Coffee {
       'description': description,
       'zoom_invite': zoom_invite,
       'access_type': access_type,
-      'start_date': interest,
-      'start_date': meeting_id,
-      'start_date': meeting_pwd,
+      'interest': interest,
+      'meeting_id': meeting_id,
+      'meeting_pwd': meeting_pwd,
       'msgIds': msgIds,
       'images': images,
       // 'profile_image_url': profile_image_url,

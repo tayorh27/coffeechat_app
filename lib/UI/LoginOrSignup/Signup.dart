@@ -432,7 +432,7 @@ class _SignupState extends State<Signup> with TickerProviderStateMixin {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
-        height: 60.0,
+        height: 70.0,
         alignment: AlignmentDirectional.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14.0),

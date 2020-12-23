@@ -16,14 +16,19 @@ import 'package:coffeechat_app/values/colors.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:link_text/link_text.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:share_it/share_it.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CoffeeShop extends StatefulWidget {
 
   final Coffee coffee;
   CoffeeShop(this.coffee);
+
+  final ChromeSafariBrowser browser =
+  new MyChromeSafariBrowser(new MyInAppBrowser());
 
   @override
   State<StatefulWidget> createState() => _CoffeeShop();
@@ -211,6 +216,19 @@ class _CoffeeShop extends State<CoffeeShop> {
     return (_findOption['widget'].length > 0) ? _findOption['widget'] : [EmptyCoffeeShop(_findOption['errorText'])];
   }
 
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url,
+          enableDomStorage: true,
+          forceWebView: true,
+          enableJavaScript: true,
+          statusBarBrightness: Brightness.dark);
+    } else {
+      new GeneralUtils()
+          .neverSatisfied(context, 'Error', 'Cannot open parameter.');
+    }
+  }
+
   List<Widget> buildCoffeeShopLayout() {
     List<dynamic> imgs = widget.coffee.images;
     return [
@@ -292,7 +310,7 @@ class _CoffeeShop extends State<CoffeeShop> {
             margin: EdgeInsets.symmetric(horizontal: 20.0),
             child: InkWell(child:
             LinkText(
-              text: widget.coffee.zoom_invite,
+              text: (widget.coffee.zoom_invite.toLowerCase().contains("zoom")) ? '${widget.coffee.zoom_invite}\n\nClick here to join the meeting.\n\n' : widget.coffee.zoom_invite,
               textAlign: TextAlign.start,
               textStyle: TextStyle(
                     color: Colors.black,
@@ -308,14 +326,29 @@ class _CoffeeShop extends State<CoffeeShop> {
                 fontSize: 15,
                 letterSpacing: -0.384,
               ),
-            ), onTap: (){
+            ), onTap: () async {
+
               String user = ss.getItem('user');
               Map<String, dynamic> json = jsonDecode(user);
               String un = '${json["fn"]} ${json["ln"]}';
-              Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                      pageBuilder: (_, __, ___) => new ZoomMeetingWidget(meetingId: widget.coffee.meeting_id,meetingPassword: widget.coffee.meeting_pwd, username: un,)));
+
+              if(widget.coffee.zoom_invite.toLowerCase().contains("zoom")) {
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => new ZoomMeetingWidget(
+                          meetingId: widget.coffee.meeting_id,
+                          meetingPassword: widget.coffee.meeting_pwd,
+                          username: un,)));
+              }else {
+                await widget.browser.open(
+                    url: widget.coffee.zoom_invite,
+                    options: ChromeSafariBrowserClassOptions(
+                        android: AndroidChromeCustomTabsOptions(addDefaultShareMenuItem: false, showTitle: true, toolbarBackgroundColor: '#EC008C'),
+                        ios: IOSSafariOptions(barCollapsingEnabled: true))).catchError((err){
+                  _launchURL(widget.coffee.zoom_invite);
+                });
+              }
             },)
             // Text(
             //     widget.coffee.description,
@@ -829,5 +862,49 @@ class _CoffeeShop extends State<CoffeeShop> {
         ),
       ),
     );
+  }
+}
+
+class MyInAppBrowser extends InAppBrowser {
+
+  @override
+  Future onLoadStart(String url) async {
+    print("\n\nStarted $url\n\n");
+  }
+
+  @override
+  Future onLoadStop(String url) async {
+    print("\n\nStopped $url\n\n");
+  }
+
+  @override
+  void onLoadError(String url, int code, String message) {
+    print("\n\nCan't load $url.. Error: $message\n\n");
+  }
+
+  @override
+  void onExit() {
+    print("\n\nBrowser closed!\n\n");
+  }
+
+}
+
+class MyChromeSafariBrowser extends ChromeSafariBrowser {
+
+  MyChromeSafariBrowser(browserFallback) : super(bFallback: browserFallback);
+
+  @override
+  void onOpened() {
+    print("ChromeSafari browser opened");
+  }
+
+  @override
+  void onCompletedInitialLoad() {
+    print("ChromeSafari browser initial load completed");
+  }
+
+  @override
+  void onClosed() {
+    print("ChromeSafari browser closed");
   }
 }

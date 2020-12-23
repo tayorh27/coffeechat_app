@@ -50,7 +50,13 @@ class _NetworkPreferences extends State<NetworkPreferences> {
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            title: Text(_prefs[index]),
+            title: Text(_prefs[index],style: TextStyle(
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.6,
+                fontFamily: "Roboto",
+                color: Colors.grey,
+                fontSize: 18.0),
+            ),
             leading: isExist(_prefs[index]) ? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank),
             onTap: () {
               if(!isExist(_prefs[index])) {
